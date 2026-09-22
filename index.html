@@ -11,7 +11,7 @@
 <style>
 :root{
   --bg:#E9E7E1;--surface:#F7F6F2;--ink:#1F1D2B;--muted:#686577;--line:#D2CFC6;
-  --accent:#4B3F9E;--accent-ink:#fff;--gain:#2B7A4B;--loss:#B0363A;--chip:#E0DDF3;
+  --accent:#4B3F9E;--accent-ink:#fff;--gain:#2B7A4B;--loss:#B0363A;--chip:#E0DDF3;--star:#C99A12;
   --sum-pos:#7FDCA3;--sum-neg:#FF9EA0;
   --display:"SamsungOne","Roboto Flex","Segoe UI Variable Display",system-ui,-apple-system,sans-serif;
   --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -22,7 +22,7 @@
 @media (prefers-color-scheme:dark){
   :root{
     --bg:#16151D;--surface:#221F2D;--ink:#EEEBF6;--muted:#9B97AC;--line:#353149;
-    --accent:#A195F2;--accent-ink:#16151D;--gain:#63C98C;--loss:#F07C7F;--chip:#322D4D;
+    --accent:#A195F2;--accent-ink:#16151D;--gain:#63C98C;--loss:#F07C7F;--chip:#322D4D;--star:#F2C94C;
     --sum-pos:#1E6B40;--sum-neg:#A12A2E;
   }
 }
@@ -31,25 +31,37 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--body);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
+[hidden]{display:none!important}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .wrap{max-width:640px;margin:0 auto;padding:12px 16px 110px}
 
-.top{display:flex;align-items:center;justify-content:space-between;padding:6px 0 14px}
-.brand{font:800 26px/1 var(--display);letter-spacing:-.02em}
+.top{display:flex;align-items:center;gap:8px;padding:6px 0 12px}
+.brand{font:800 26px/1 var(--display);letter-spacing:-.02em;flex:1}
 .iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:12px;width:42px;height:42px;display:grid;place-items:center;font-size:18px}
+
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:12px}
+.tabs button{border:0;background:none;border-radius:10px;padding:9px 4px;font-weight:600;font-size:14px;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+.tabs small{font-weight:500;opacity:.8}
 
 .summary{background:var(--ink);color:var(--bg);border-radius:22px;padding:20px 20px 16px}
 .summary .lbl{font-size:14px;opacity:.75}
-.summary .big{font:800 clamp(36px,11vw,52px)/1.05 var(--display);letter-spacing:-.03em;margin:4px 0 14px;word-break:break-word}
+.summary .big{font:800 clamp(34px,10.5vw,50px)/1.05 var(--display);letter-spacing:-.03em;margin:4px 0 14px;word-break:break-word}
 .summary .row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;border-top:1px solid color-mix(in srgb,var(--bg) 22%,transparent);padding-top:12px}
 .summary .row span{display:block;font-size:13px;opacity:.7}
 .summary .row b{font-weight:600;font-size:15px}
 .pos{color:var(--gain)}.neg{color:var(--loss)}
 .summary .pos{color:var(--sum-pos)}.summary .neg{color:var(--sum-neg)}
 
-.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 10px}
-.tools input{grid-column:1/-1}
-.field,.tools input,.tools select{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 12px;min-height:46px}
+.tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin:16px 0 8px}
+.field,.tools input,.filters select{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 12px;min-height:46px}
+.fbtn{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:0 14px;min-height:46px;font-weight:600;white-space:nowrap}
+.fbtn[data-n]:not([data-n="0"])::after{content:" (" attr(data-n) ")";color:var(--accent)}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.filters .full{grid-column:1/-1}
+.check{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 12px;min-height:46px}
+.check input{width:20px;height:20px;accent-color:var(--accent)}
+.linkbtn{background:none;border:0;color:var(--accent);font-weight:600;padding:8px 0;text-align:left}
 .notice{background:var(--chip);border-radius:12px;padding:12px 14px;margin-top:14px;font-size:15px}
 
 .list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
@@ -57,6 +69,7 @@ button{cursor:pointer}
 .thumb{width:68px;height:68px;border-radius:11px;background:var(--chip);display:grid;place-items:center;font:800 22px var(--display);color:var(--accent);overflow:hidden}
 .thumb img{width:100%;height:100%;object-fit:cover}
 .item h3{margin:0;font:600 16px/1.25 var(--body);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.star{color:var(--star)}
 .meta{font-size:13px;color:var(--muted);margin-top:2px}
 .vals{text-align:right;font-size:13px;color:var(--muted);white-space:nowrap}
 .vals b{display:block;font-size:15px;color:var(--ink);font-weight:600}
@@ -82,8 +95,10 @@ label.f span{display:block;font-size:14px;margin-bottom:4px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 textarea.field{min-height:80px;resize:vertical}
 .seg{display:flex;flex-wrap:wrap;gap:6px}
-.seg button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 13px;font-size:14px}
+.seg button,.tagpick button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 13px;font-size:14px}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.tagpick{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tagpick button{padding:5px 11px;font-size:13px}
 .hint{font-size:13px;color:var(--muted);margin:4px 0 0}
 
 .photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
@@ -106,17 +121,30 @@ textarea.field{min-height:80px;resize:vertical}
 .vtitle{font:800 28px/1.1 var(--display);letter-spacing:-.02em;margin:0 0 4px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 18px}
 .chip{background:var(--chip);border-radius:999px;padding:5px 11px;font-size:13px}
-.cmp{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:16px}
-.cmp dl{display:grid;grid-template-columns:1fr auto;gap:8px 12px;margin:0}
-.cmp dt{color:var(--muted);font-size:14px}.cmp dd{margin:0;font-weight:600;text-align:right}
-.cmp .tot{border-top:1px solid var(--line);padding-top:8px}
+.chip.tag::before{content:"#";opacity:.6}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:16px}
+.card h3{margin:0 0 10px;font:700 16px var(--display)}
+.card dl{display:grid;grid-template-columns:1fr auto;gap:8px 12px;margin:0}
+.card dt{color:var(--muted);font-size:14px}.card dd{margin:0;font-weight:600;text-align:right}
+.card .tot{border-top:1px solid var(--line);padding-top:8px}
 .notes{white-space:pre-wrap;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:16px}
+
+.hist{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:2px}
+.hist li{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;font-size:14px;padding:6px 0;border-top:1px solid var(--line)}
+.hist button{border:0;background:none;color:var(--muted);font-size:15px;padding:4px 6px}
+.chart{width:100%;height:auto;display:block;color:var(--accent)}
+.chart text{fill:var(--muted);font-size:10px;font-family:var(--body)}
+table.rep{width:100%;border-collapse:collapse;font-size:14px}
+table.rep th{text-align:left;font-weight:600;color:var(--muted);font-size:13px;padding:6px 4px;border-bottom:1px solid var(--line)}
+table.rep td{padding:8px 4px;border-bottom:1px solid var(--line)}
+table.rep td.n,table.rep th.n{text-align:right;white-space:nowrap}
+.scroll{overflow-x:auto}
 
 .lightbox{position:fixed;inset:0;background:#000;display:none;z-index:50;align-items:center;justify-content:center}
 .lightbox.on{display:flex}
 .lightbox img{max-width:100%;max-height:100%;object-fit:contain}
 .lightbox button{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:12px;border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:999px;padding:8px 14px}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:60;max-width:90%}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:60;max-width:90%;text-align:center}
 .toast.on{opacity:1}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 </style>
@@ -125,54 +153,98 @@ textarea.field{min-height:80px;resize:vertical}
 <div class="wrap">
   <header class="top">
     <div class="brand">Estante</div>
+    <button class="iconbtn" id="btnRep" aria-label="Relatórios">📊</button>
     <button class="iconbtn" id="btnCfg" aria-label="Ajustes e backup">⚙︎</button>
   </header>
 
-  <section class="summary" aria-label="Resumo da coleção">
-    <div class="lbl">Valor de mercado estimado</div>
-    <div class="big" id="sMercado">R$ 0,00</div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-st="colecao" aria-selected="true">Coleção <small id="nCol"></small></button>
+    <button role="tab" data-st="desejo" aria-selected="false">Desejos <small id="nDes"></small></button>
+    <button role="tab" data-st="vendido" aria-selected="false">Vendidos <small id="nVen"></small></button>
+  </nav>
+
+  <section class="summary" aria-label="Resumo">
+    <div class="lbl" id="sLbl"></div>
+    <div class="big" id="sBig"></div>
     <div class="row">
-      <div><span>Investido</span><b id="sPago">R$ 0,00</b></div>
-      <div><span>Diferença</span><b id="sDif">—</b></div>
-      <div><span>Itens</span><b id="sQtd">0</b></div>
+      <div><span id="l1"></span><b id="v1"></b></div>
+      <div><span id="l2"></span><b id="v2"></b></div>
+      <div><span id="l3"></span><b id="v3"></b></div>
     </div>
   </section>
   <div id="notice"></div>
 
   <div class="tools">
-    <input id="q" type="search" placeholder="Buscar pelo nome" aria-label="Buscar">
-    <select id="fPlat" aria-label="Filtrar plataforma"><option value="">Todas as plataformas</option></select>
+    <input id="q" type="search" placeholder="Buscar por nome, edição ou etiqueta" aria-label="Buscar">
+    <button class="fbtn" id="btnFil" data-n="0" aria-expanded="false">Filtros</button>
+  </div>
+  <div class="filters" id="filters" hidden>
+    <select id="fPlat" aria-label="Plataforma"></select>
+    <select id="fTipo" aria-label="Tipo"></select>
+    <select id="fComp" aria-label="O que acompanha"></select>
+    <select id="fTag" aria-label="Etiqueta"></select>
+    <label class="check"><input type="checkbox" id="fFav"> Só favoritos</label>
     <select id="sort" aria-label="Ordenar">
       <option value="recent">Mais recentes</option>
       <option value="name">Nome (A–Z)</option>
       <option value="market">Maior valor de mercado</option>
       <option value="paid">Maior valor pago</option>
+      <option value="gain">Maior valorização</option>
     </select>
+    <button class="linkbtn full" id="fClear">Limpar filtros</button>
   </div>
 
   <ul class="list" id="list"></ul>
-  <div class="empty" id="empty" hidden><b>Sua estante está vazia</b>Toque em “Adicionar jogo” para catalogar o primeiro item.</div>
+  <div class="empty" id="empty" hidden></div>
 </div>
 
-<button class="fab" id="btnAdd">+ Adicionar jogo</button>
+<button class="fab" id="btnAdd">+ Adicionar</button>
 
+<!-- Edição -->
 <dialog id="dlgEdit">
   <div class="sheet">
     <div class="sheet-head">
       <button class="txtbtn l" id="eCancel">Cancelar</button>
-      <h2 id="eTitle">Novo jogo</h2>
+      <h2 id="eTitle">Novo item</h2>
       <button class="txtbtn r" id="eSave">Salvar</button>
     </div>
     <div class="sheet-body">
       <div class="grp">
-        <label class="f"><span>Nome do jogo</span><input class="field" id="iNome" autocomplete="off"></label>
+        <h4>Tipo</h4>
+        <div class="seg" id="segTipo" data-field="tipo">
+          <button type="button" data-v="Jogo">Jogo</button>
+          <button type="button" data-v="Console">Console</button>
+          <button type="button" data-v="Acessório">Acessório</button>
+        </div>
+      </div>
+      <div class="grp">
+        <h4>Situação</h4>
+        <div class="seg" id="segStatus" data-field="status" data-required>
+          <button type="button" data-v="colecao">Na coleção</button>
+          <button type="button" data-v="desejo">Lista de desejos</button>
+          <button type="button" data-v="vendido">Vendido</button>
+        </div>
+      </div>
+
+      <div class="grp">
+        <label class="f"><span>Nome</span><input class="field" id="iNome" autocomplete="off"></label>
         <div class="two">
           <label class="f"><span>Plataforma</span><input class="field" id="iPlat" list="plats" autocomplete="off"></label>
           <label class="f"><span>Região</span>
             <select class="field" id="iReg"><option value="">—</option><option>NTSC-U (EUA)</option><option>NTSC-J (Japão)</option><option>PAL (Europa)</option><option>Brasil</option></select>
           </label>
         </div>
-        <datalist id="plats"></datalist>
+        <div class="two">
+          <label class="f"><span>Gênero</span><input class="field" id="iGen" list="gens" autocomplete="off"></label>
+          <label class="f"><span>Edição</span><input class="field" id="iEd" list="eds" autocomplete="off" placeholder="Ex.: Greatest Hits"></label>
+        </div>
+        <label class="check" style="margin-top:2px"><input type="checkbox" id="iFav"> <span class="star">★</span> Favorito</label>
+        <datalist id="plats"></datalist><datalist id="gens"></datalist><datalist id="eds"></datalist>
+      </div>
+
+      <div class="grp">
+        <label class="f"><span>Etiquetas (separe por vírgula)</span><input class="field" id="iTags" autocomplete="off" placeholder="Ex.: raro, japonês, para vender"></label>
+        <div class="tagpick" id="tagPick"></div>
       </div>
 
       <div class="grp">
@@ -180,8 +252,8 @@ textarea.field{min-height:80px;resize:vertical}
         <div class="seg" id="segComp" data-field="completude">
           <button type="button" data-v="Lacrado">Lacrado</button>
           <button type="button" data-v="Completo (CIB)">Completo (CIB)</button>
-          <button type="button" data-v="Jogo + caixa">Jogo + caixa</button>
-          <button type="button" data-v="Só o jogo (loose)">Só o jogo (loose)</button>
+          <button type="button" data-v="Item + caixa">Item + caixa</button>
+          <button type="button" data-v="Loose (só o item)">Loose (só o item)</button>
         </div>
       </div>
       <div class="grp">
@@ -201,7 +273,7 @@ textarea.field{min-height:80px;resize:vertical}
         <p class="hint">As fotos são reduzidas e ficam guardadas só neste celular.</p>
       </div>
 
-      <div class="grp">
+      <div class="grp" data-show="colecao vendido">
         <h4>Aquisição</h4>
         <div class="two">
           <label class="f"><span>Valor pago (R$)</span><input class="field" id="iPago" inputmode="decimal" placeholder="0,00"></label>
@@ -210,11 +282,24 @@ textarea.field{min-height:80px;resize:vertical}
         <label class="f"><span>Onde comprou</span><input class="field" id="iOnde" placeholder="Loja, feira, OLX…"></label>
       </div>
 
+      <div class="grp" data-show="desejo">
+        <h4>Quanto aceito pagar</h4>
+        <label class="f"><span>Preço-alvo (R$)</span><input class="field" id="iAlvo" inputmode="decimal" placeholder="0,00"></label>
+      </div>
+
+      <div class="grp" data-show="vendido">
+        <h4>Venda</h4>
+        <div class="two">
+          <label class="f"><span>Valor de venda (R$)</span><input class="field" id="iVenda" inputmode="decimal" placeholder="0,00"></label>
+          <label class="f"><span>Data da venda</span><input class="field" id="iDataVenda" type="date"></label>
+        </div>
+        <label class="f"><span>Vendido para / onde</span><input class="field" id="iOndeVenda"></label>
+      </div>
+
       <div class="grp">
         <h4>Referência PriceCharting</h4>
-        <a class="btn" id="pcLink" href="#" target="_blank" rel="noopener">Consultar no PriceCharting</a>
-        <p class="hint">Precisa de internet. Abre a busca pelo nome e plataforma; copie o valor do estado do seu item.</p>
-        <div class="two" style="margin-top:10px">
+        <div class="stack" id="ePcBtns"></div>
+        <div class="two" style="margin-top:12px">
           <label class="f"><span>Valor (US$)</span><input class="field" id="iPc" inputmode="decimal" placeholder="0.00"></label>
           <label class="f"><span>Cotação de</span><input class="field" id="iPcData" type="date"></label>
         </div>
@@ -224,6 +309,7 @@ textarea.field{min-height:80px;resize:vertical}
           <button type="button" data-v="New">New</button>
           <button type="button" data-v="Graded">Graded</button>
         </div>
+        <p class="hint">Cada cotação nova (valor ou data diferente) entra no histórico do item.</p>
       </div>
 
       <div class="grp">
@@ -233,6 +319,7 @@ textarea.field{min-height:80px;resize:vertical}
   </div>
 </dialog>
 
+<!-- Detalhe -->
 <dialog id="dlgView">
   <div class="sheet">
     <div class="sheet-head">
@@ -244,6 +331,19 @@ textarea.field{min-height:80px;resize:vertical}
   </div>
 </dialog>
 
+<!-- Relatórios -->
+<dialog id="dlgRep">
+  <div class="sheet">
+    <div class="sheet-head">
+      <button class="txtbtn l" id="rClose">Fechar</button>
+      <h2>Relatórios</h2>
+      <span style="min-width:72px"></span>
+    </div>
+    <div class="sheet-body" id="rBody"></div>
+  </div>
+</dialog>
+
+<!-- Ajustes -->
 <dialog id="dlgCfg">
   <div class="sheet">
     <div class="sheet-head">
@@ -264,8 +364,9 @@ textarea.field{min-height:80px;resize:vertical}
           <button class="btn" id="bExport">Exportar backup</button>
           <label class="btn">Restaurar backup<input type="file" id="bImport" accept="application/json,.json"></label>
         </div>
-        <p class="hint" id="bInfo">A coleção fica só neste celular. Exporte um backup de vez em quando e guarde no Drive ou no PC; desinstalar o app ou limpar os dados apaga tudo.</p>
+        <p class="hint">A coleção fica só neste celular. Exporte um backup de vez em quando e guarde no Drive ou no PC; desinstalar o app ou limpar os dados apaga tudo.</p>
         <p class="hint" id="sInfo"></p>
+        <p class="hint" id="vInfo"></p>
       </div>
     </div>
   </div>
@@ -275,7 +376,7 @@ textarea.field{min-height:80px;resize:vertical}
 <div class="toast" id="toast" role="status"></div>
 
 <script>
-/* ---------- Armazenamento local (IndexedDB) ---------- */
+/* ================= Armazenamento local (IndexedDB) ================= */
 const idb = (() => {
   let p;
   const open = () => p ||= new Promise((res, rej) => {
@@ -294,7 +395,6 @@ const idb = (() => {
   }
   return {
     all: s => tx(s, "readonly", st => st.getAll()),
-    keys: s => tx(s, "readonly", st => st.getAllKeys()),
     get: (s, k) => tx(s, "readonly", st => st.get(k)),
     put: (s, v, k) => tx(s, "readwrite", st => k === undefined ? st.put(v) : st.put(v, k)),
     del: (s, k) => tx(s, "readwrite", st => st.delete(k)),
@@ -302,25 +402,48 @@ const idb = (() => {
   };
 })();
 
+/* ================= Utilidades ================= */
+const VERSAO = "1.2";
 const $ = s => document.querySelector(s);
-const PLATS = ["Atari 2600","NES","Super Nintendo","Nintendo 64","GameCube","Wii","Wii U","Nintendo Switch","Game Boy","Game Boy Color","Game Boy Advance","Nintendo DS","Nintendo 3DS","Master System","Mega Drive","Sega Saturn","Dreamcast","Game Gear","PlayStation","PlayStation 2","PlayStation 3","PlayStation 4","PlayStation 5","PSP","PS Vita","Xbox","Xbox 360","Xbox One","Xbox Series X","Neo Geo","TurboGrafx-16","PC"];
-let games = [], cfg = { cotacao: 5.40 };
+const PLATS = ["Atari 2600","NES","Super Nintendo","Nintendo 64","GameCube","Wii","Wii U","Nintendo Switch","Nintendo Switch 2","Game Boy","Game Boy Color","Game Boy Advance","Nintendo DS","Nintendo 3DS","Master System","Mega Drive","Sega CD","Sega Saturn","Dreamcast","Game Gear","PlayStation","PlayStation 2","PlayStation 3","PlayStation 4","PlayStation 5","PSP","PS Vita","Xbox","Xbox 360","Xbox One","Xbox Series X","Neo Geo","TurboGrafx-16","PC"];
+const GENS = ["Ação","Aventura","RPG","Plataforma","Corrida","Esporte","Luta","Tiro","Estratégia","Puzzle","Simulação","Terror","Musical","Party"];
+const EDS = ["Padrão","Greatest Hits","Platinum","Player's Choice","Nintendo Selects","Collector's Edition","Limited Edition","Steelbook","Black Label"];
+const STL = { colecao: "Na coleção", desejo: "Lista de desejos", vendido: "Vendido" };
+const PC_PKG = "com.vgpc.pricecharting";
+const isAndroid = /Android/i.test(navigator.userAgent);
+
+let games = [], cfg = { cotacao: 5.40 }, tab = "colecao";
 let editing = null, viewing = null, draft = {}, origFotos = [], uploading = 0;
 const urls = new Map();
 
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
 const brl = n => (n ?? 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const usd = n => (n ?? 0).toLocaleString("en-US", { style: "currency", currency: "USD" });
+const pct = n => (n>=0?"+":"") + n.toLocaleString("pt-BR",{maximumFractionDigits:1}) + "%";
+const sinal = n => (n>=0?"+":"") + brl(n);
 const num = v => { if (v == null) return null; const s = String(v).trim().replace(/\s/g,""); if (!s) return null;
   const n = parseFloat(s.includes(",") ? s.replace(/\./g,"").replace(",",".") : s); return isFinite(n) ? n : null; };
 const fmtIn = n => n == null ? "" : String(n).replace(".", ",");
-const mercado = g => g.pcValor != null ? g.pcValor * (cfg.cotacao || 0) : null;
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 const dataBR = d => d ? d.split("-").reverse().join("/") : "";
-const hoje = () => new Date().toISOString().slice(0,10);
-function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("on"),2800); }
+const hoje = () => { const d = new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); };
+const mercado = g => g.pcValor != null ? g.pcValor * (cfg.cotacao || 0) : null;
+const ganho = g => { const m = mercado(g); return (m!=null && g.precoPago!=null) ? m - g.precoPago : null; };
+const lucroVenda = g => (g.valorVenda!=null && g.precoPago!=null) ? g.valorVenda - g.precoPago : null;
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("on"),3000); }
 function openDlg(d){ if (!d.open) d.showModal(); }
 function closeDlg(d){ if (d.open) d.close(); }
+
+/* Compatibilidade com itens da versão 1.0/1.1 */
+const COMP_MAP = { "Jogo + caixa": "Item + caixa", "Só o jogo (loose)": "Loose (só o item)" };
+function norm(g){
+  g.tipo ||= "Jogo"; g.status ||= "colecao"; g.tags ||= []; g.fotos ||= []; g.fav = !!g.fav;
+  if (COMP_MAP[g.completude]) g.completude = COMP_MAP[g.completude];
+  if (!Array.isArray(g.pcHist)) {
+    g.pcHist = g.pcValor != null ? [{ data: g.pcData || new Date(g.criadoEm||Date.now()).toISOString().slice(0,10), valor: g.pcValor, tipo: g.pcTipo||"" }] : [];
+  }
+  return g;
+}
 
 async function photoURL(id){
   if (urls.has(id)) return urls.get(id);
@@ -332,116 +455,276 @@ function hydrate(root){ root.querySelectorAll("img[data-ph]").forEach(async img 
 async function dropPhotos(ids){
   for (const id of ids){ try { await idb.del("photos", id); } catch(_){} const u = urls.get(id); if (u) URL.revokeObjectURL(u); urls.delete(id); }
 }
-async function reload(){ games = await idb.all("games"); render(); }
+async function reload(){ games = (await idb.all("games")).map(norm); render(); }
 
 $("#plats").innerHTML = PLATS.map(p => `<option value="${p}">`).join("");
+$("#gens").innerHTML = GENS.map(p => `<option value="${p}">`).join("");
+$("#eds").innerHTML = EDS.map(p => `<option value="${p}">`).join("");
 
-/* ---------- Lista ---------- */
+/* ================= PriceCharting ================= */
+const pcQuery = g => `${g.nome||""} ${g.plataforma||""}`.trim();
+const pcWeb = g => "https://www.pricecharting.com/search-products?type=prices&q=" + encodeURIComponent(pcQuery(g));
+function pcIntent(g){
+  const web = pcWeb(g), u = new URL(web);
+  return `intent://${u.host}${u.pathname}${u.search}#Intent;scheme=https;package=${PC_PKG};S.browser_fallback_url=${encodeURIComponent(web)};end`;
+}
+const pcLauncher = () => `intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=${PC_PKG};S.browser_fallback_url=${encodeURIComponent("https://play.google.com/store/apps/details?id="+PC_PKG)};end`;
+async function copiar(txt){ try { await navigator.clipboard.writeText(txt); return true; } catch { return false; } }
+function pcButtons(){
+  return (isAndroid ? `
+    <button class="btn pri" type="button" data-pc="app">Pesquisar no app PriceCharting</button>
+    <button class="btn" type="button" data-pc="launch">Só abrir o app (nome copiado para colar)</button>` : "") +
+    `<button class="btn" type="button" data-pc="web">Abrir no site</button>`;
+}
+async function pcAction(kind, g){
+  if (!g.nome){ toast("Preencha o nome primeiro."); return; }
+  const ok = await copiar(pcQuery(g));
+  if (kind === "web") { window.open(pcWeb(g), "_blank", "noopener"); return; }
+  if (ok) toast("“" + pcQuery(g) + "” copiado. Se o app não abrir no jogo, cole na busca.");
+  setTimeout(() => { location.href = kind === "app" ? pcIntent(g) : pcLauncher(); }, 350);
+}
+
+/* ================= Lista ================= */
+document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
+  tab = b.dataset.st;
+  document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-selected", String(x === b)));
+  render();
+}));
+$("#btnFil").onclick = () => { const f = $("#filters"); f.hidden = !f.hidden; $("#btnFil").setAttribute("aria-expanded", String(!f.hidden)); };
+$("#fClear").onclick = () => { ["#fPlat","#fTipo","#fComp","#fTag"].forEach(s => $(s).value = ""); $("#fFav").checked = false; render(); };
+["#q","#fPlat","#fTipo","#fComp","#fTag","#fFav","#sort"].forEach(s => $(s).addEventListener("input", render));
+
+function fillSelect(sel, label, values){
+  const cur = sel.value;
+  sel.innerHTML = `<option value="">${label}</option>` + values.map(v => `<option ${v===cur?"selected":""}>${esc(v)}</option>`).join("");
+  if (!values.includes(cur)) sel.value = "";
+}
+const uniq = arr => [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR"));
+const allTags = () => uniq(games.flatMap(g => g.tags));
+
+function renderSummary(itens){
+  const set = (lbl, big, cells) => {
+    $("#sLbl").textContent = lbl; $("#sBig").textContent = big.t; $("#sBig").className = "big " + (big.c||"");
+    cells.forEach((c,i) => { $("#l"+(i+1)).textContent = c[0]; const v = $("#v"+(i+1)); v.textContent = c[1]; v.className = c[2]||""; });
+  };
+  if (tab === "colecao"){
+    const comRef = itens.filter(g => g.pcValor != null);
+    const merc = comRef.reduce((a,g)=>a+mercado(g),0);
+    const pago = itens.reduce((a,g)=>a+(g.precoPago||0),0);
+    const pagoRef = comRef.reduce((a,g)=>a+(g.precoPago||0),0);
+    const d = merc - pagoRef;
+    set("Valor de mercado estimado", {t: brl(merc)}, [["Investido", brl(pago)], ["Diferença", comRef.length ? sinal(d) : "—", comRef.length ? (d>=0?"pos":"neg") : ""], ["Itens", String(itens.length)]]);
+  } else if (tab === "desejo"){
+    const merc = itens.reduce((a,g)=>a+(mercado(g)||0),0);
+    const alvo = itens.reduce((a,g)=>a+(g.precoAlvo||0),0);
+    const baratos = itens.filter(g => g.precoAlvo!=null && mercado(g)!=null && mercado(g) <= g.precoAlvo).length;
+    set("Custo da lista a preço de mercado", {t: brl(merc)}, [["Soma dos alvos", brl(alvo)], ["No alvo ou abaixo", String(baratos)], ["Itens", String(itens.length)]]);
+  } else {
+    const venda = itens.reduce((a,g)=>a+(g.valorVenda||0),0);
+    const custo = itens.reduce((a,g)=>a+(g.precoPago||0),0);
+    const lucro = itens.reduce((a,g)=>a+(lucroVenda(g)||0),0);
+    set("Lucro realizado nas vendas", {t: sinal(lucro), c: itens.length ? (lucro>=0?"pos":"neg") : ""}, [["Total vendido", brl(venda)], ["Custo", brl(custo)], ["Itens", String(itens.length)]]);
+  }
+}
+
 function render(){
-  const pago = games.reduce((a,g)=>a+(g.precoPago||0),0);
-  const comRef = games.filter(g => g.pcValor != null);
-  const merc = comRef.reduce((a,g)=>a+mercado(g),0);
-  const pagoRef = comRef.reduce((a,g)=>a+(g.precoPago||0),0);
-  $("#sMercado").textContent = brl(merc);
-  $("#sPago").textContent = brl(pago);
-  $("#sQtd").textContent = games.length;
-  const dif = $("#sDif");
-  if (comRef.length){ const d = merc - pagoRef; dif.textContent = (d>=0?"+":"") + brl(d); dif.className = d>=0?"pos":"neg"; }
-  else { dif.textContent = "—"; dif.className = ""; }
+  $("#nCol").textContent = games.filter(g=>g.status==="colecao").length || "";
+  $("#nDes").textContent = games.filter(g=>g.status==="desejo").length || "";
+  $("#nVen").textContent = games.filter(g=>g.status==="vendido").length || "";
 
-  const plats = [...new Set(games.map(g=>g.plataforma).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR"));
-  const sel = $("#fPlat"), cur = sel.value;
-  sel.innerHTML = `<option value="">Todas as plataformas</option>` + plats.map(p=>`<option ${p===cur?"selected":""}>${esc(p)}</option>`).join("");
+  const doTab = games.filter(g => g.status === tab);
+  renderSummary(doTab);
 
-  const q = $("#q").value.trim().toLowerCase(), fp = sel.value, so = $("#sort").value;
-  const arr = games.filter(g => (!q || (g.nome||"").toLowerCase().includes(q)) && (!fp || g.plataforma === fp));
+  fillSelect($("#fPlat"), "Todas as plataformas", uniq(doTab.map(g=>g.plataforma)));
+  fillSelect($("#fTipo"), "Todos os tipos", uniq(doTab.map(g=>g.tipo)));
+  fillSelect($("#fComp"), "Qualquer completude", uniq(doTab.map(g=>g.completude)));
+  fillSelect($("#fTag"), "Todas as etiquetas", uniq(doTab.flatMap(g=>g.tags)));
+
+  const q = $("#q").value.trim().toLowerCase();
+  const fp = $("#fPlat").value, ft = $("#fTipo").value, fc = $("#fComp").value, fg = $("#fTag").value, ff = $("#fFav").checked;
+  $("#btnFil").dataset.n = [fp,ft,fc,fg,ff].filter(Boolean).length;
+  const arr = doTab.filter(g =>
+    (!q || [g.nome,g.edicao,g.plataforma,...g.tags].join(" ").toLowerCase().includes(q)) &&
+    (!fp || g.plataforma===fp) && (!ft || g.tipo===ft) && (!fc || g.completude===fc) &&
+    (!fg || g.tags.includes(fg)) && (!ff || g.fav));
+  const so = $("#sort").value;
+  const pctG = g => { const x = ganho(g); return (x!=null && g.precoPago) ? x/g.precoPago : -Infinity; };
   const by = {
     recent:(a,b)=>(b.criadoEm||0)-(a.criadoEm||0),
     name:(a,b)=>(a.nome||"").localeCompare(b.nome||"","pt-BR"),
     market:(a,b)=>(mercado(b)??-1)-(mercado(a)??-1),
-    paid:(a,b)=>(b.precoPago||0)-(a.precoPago||0)
+    paid:(a,b)=>(b.precoPago||0)-(a.precoPago||0),
+    gain:(a,b)=>pctG(b)-pctG(a)
   };
   arr.sort(by[so]);
-  $("#empty").hidden = games.length > 0;
+
+  const empty = $("#empty");
+  empty.hidden = doTab.length > 0;
+  empty.innerHTML = {
+    colecao: "<b>Sua estante está vazia</b>Toque em “Adicionar” para catalogar o primeiro item.",
+    desejo: "<b>Nenhum desejo ainda</b>Adicione itens que você está procurando e defina um preço-alvo.",
+    vendido: "<b>Nenhuma venda registrada</b>Abra um item da coleção e toque em “Registrar venda”."
+  }[tab];
+
   const list = $("#list");
   list.innerHTML = arr.map(g => {
     const m = mercado(g);
-    const th = g.fotos?.length ? `<img data-ph="${g.fotos[0]}" alt="">` : esc((g.nome||"?").trim().charAt(0).toUpperCase());
-    const meta = [g.plataforma, g.completude].filter(Boolean).map(esc).join(" / ");
+    const th = g.fotos.length ? `<img data-ph="${g.fotos[0]}" alt="">` : esc((g.nome||"?").trim().charAt(0).toUpperCase());
+    const meta = [g.plataforma, g.tipo!=="Jogo"?g.tipo:"", g.completude].filter(Boolean).map(esc).join(" / ");
+    let vals;
+    if (tab === "colecao") vals = `<b>${m!=null?brl(m):"—"}</b>pago ${g.precoPago!=null?brl(g.precoPago):"—"}`;
+    else if (tab === "desejo") vals = `<b>${m!=null?brl(m):"—"}</b>alvo ${g.precoAlvo!=null?brl(g.precoAlvo):"—"}`;
+    else { const l = lucroVenda(g); vals = `<b>${g.valorVenda!=null?brl(g.valorVenda):"—"}</b><span class="${l==null?"":l>=0?"pos":"neg"}">${l!=null?sinal(l):"—"}</span>`; }
     return `<li><button class="item" data-id="${g.id}">
       <span class="thumb">${th}</span>
-      <span><h3>${esc(g.nome)}</h3><div class="meta">${meta||"&nbsp;"}</div></span>
-      <span class="vals"><b>${m!=null?brl(m):"—"}</b>pago ${g.precoPago!=null?brl(g.precoPago):"—"}</span>
+      <span><h3>${g.fav?'<span class="star">★</span> ':""}${esc(g.nome)}</h3><div class="meta">${meta||"&nbsp;"}</div></span>
+      <span class="vals">${vals}</span>
     </button></li>`;
-  }).join("") || (games.length ? `<li class="empty">Nenhum jogo encontrado com esse filtro.</li>` : "");
+  }).join("") || (doTab.length ? `<li class="empty">Nenhum item encontrado com esses filtros.</li>` : "");
   hydrate(list);
 }
-["#q","#fPlat","#sort"].forEach(s => $(s).addEventListener("input", render));
 $("#list").addEventListener("click", e => { const b = e.target.closest(".item"); if (b) showView(b.dataset.id); });
 
-/* ---------- Detalhe ---------- */
-function pcSearch(nome, plat){ return "https://www.pricecharting.com/search-products?type=prices&q=" + encodeURIComponent(`${nome||""} ${plat||""}`.trim()); }
+/* ================= Gráfico SVG simples ================= */
+function lineChart(pts, fmt){
+  if (pts.length < 2) return `<p class="hint">O gráfico aparece a partir de duas cotações em datas diferentes.</p>`;
+  const W=320,H=150,L=8,R=8,T=18,B=22;
+  const t = pts.map(p => new Date(p.x+"T12:00:00").getTime());
+  const t0=Math.min(...t), t1=Math.max(...t), ys=pts.map(p=>p.y);
+  let y0=Math.min(...ys), y1=Math.max(...ys); if (y0===y1){ y0-=1; y1+=1; }
+  const X = v => L + (t1===t0 ? (W-L-R)/2 : (v-t0)/(t1-t0)*(W-L-R));
+  const Y = v => T + (1-(v-y0)/(y1-y0))*(H-T-B);
+  const d = pts.map((p,i)=>`${i?"L":"M"}${X(t[i]).toFixed(1)},${Y(p.y).toFixed(1)}`).join(" ");
+  const last = pts[pts.length-1];
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfico de evolução">
+    <line x1="${L}" x2="${W-R}" y1="${H-B}" y2="${H-B}" stroke="currentColor" stroke-opacity=".2"/>
+    <path d="${d}" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${pts.map((p,i)=>`<circle cx="${X(t[i]).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="3" fill="currentColor"/>`).join("")}
+    <text x="${L}" y="${H-6}">${dataBR(pts[0].x)}</text>
+    <text x="${W-R}" y="${H-6}" text-anchor="end">${dataBR(last.x)}</text>
+    <text x="${L}" y="11">máx ${fmt(Math.max(...ys))}</text>
+    <text x="${W-R}" y="11" text-anchor="end">atual ${fmt(last.y)}</text>
+  </svg>`;
+}
+
+/* ================= Detalhe ================= */
 function showView(id){
   const g = games.find(x=>x.id===id); if (!g) return; viewing = id;
-  const m = mercado(g), d = (m!=null && g.precoPago!=null) ? m - g.precoPago : null;
+  const m = mercado(g), gn = ganho(g), lv = lucroVenda(g);
+  const hist = [...g.pcHist].sort((a,b)=>a.data.localeCompare(b.data));
   const body = $("#vBody");
+  const linhas = [];
+  if (g.status !== "desejo"){
+    linhas.push(`<dt>Valor pago</dt><dd>${g.precoPago!=null?brl(g.precoPago):"—"}</dd>`);
+    if (g.dataCompra) linhas.push(`<dt>Comprado em</dt><dd>${dataBR(g.dataCompra)}</dd>`);
+    if (g.onde) linhas.push(`<dt>Onde</dt><dd>${esc(g.onde)}</dd>`);
+  } else if (g.precoAlvo!=null) linhas.push(`<dt>Preço-alvo</dt><dd>${brl(g.precoAlvo)}</dd>`);
+  linhas.push(`<dt>PriceCharting${g.pcTipo?` (${esc(g.pcTipo)})`:""}</dt><dd>${g.pcValor!=null?usd(g.pcValor):"—"}</dd>`);
+  if (g.pcData) linhas.push(`<dt>Cotado em</dt><dd>${dataBR(g.pcData)}</dd>`);
+  linhas.push(`<dt>Em reais (US$ 1 = ${brl(cfg.cotacao)})</dt><dd>${m!=null?brl(m):"—"}</dd>`);
+  if (g.status === "colecao") linhas.push(`<dt class="tot">Diferença</dt><dd class="tot ${gn==null?"":gn>=0?"pos":"neg"}">${gn==null?"—":sinal(gn)+(g.precoPago?` (${pct(gn/g.precoPago*100)})`:"")}</dd>`);
+  if (g.status === "desejo" && g.precoAlvo!=null && m!=null) { const d = g.precoAlvo - m; linhas.push(`<dt class="tot">Alvo vs. mercado</dt><dd class="tot ${d>=0?"pos":"neg"}">${d>=0?"mercado dentro do alvo":"acima do alvo em "+brl(-d)}</dd>`); }
+  let venda = "";
+  if (g.status === "vendido") venda = `<div class="card"><h3>Venda</h3><dl>
+      <dt>Valor de venda</dt><dd>${g.valorVenda!=null?brl(g.valorVenda):"—"}</dd>
+      ${g.dataVenda?`<dt>Data</dt><dd>${dataBR(g.dataVenda)}</dd>`:""}
+      ${g.ondeVenda?`<dt>Para / onde</dt><dd>${esc(g.ondeVenda)}</dd>`:""}
+      <dt class="tot">Lucro</dt><dd class="tot ${lv==null?"":lv>=0?"pos":"neg"}">${lv==null?"—":sinal(lv)}</dd></dl></div>`;
+  const acoes = [];
+  acoes.push(`<button class="btn" id="vFav">${g.fav?"★ Remover dos favoritos":"☆ Marcar como favorito"}</button>`);
+  if (g.status === "colecao") acoes.push(`<button class="btn" data-mv="vendido">Registrar venda</button>`);
+  if (g.status === "desejo") acoes.push(`<button class="btn" data-mv="colecao">Comprei! Mover para a coleção</button>`);
+  if (g.status === "vendido") acoes.push(`<button class="btn" data-mv="colecao">Desfazer venda (voltar à coleção)</button>`);
+  acoes.push(`<button class="btn danger" id="vDel">Excluir item</button>`);
+
   body.innerHTML = `
-    ${g.fotos?.length ? `<div class="gallery">${g.fotos.map(f=>`<button data-ph-open="${f}"><img data-ph="${f}" alt="Foto de ${esc(g.nome)}"></button>`).join("")}</div>` : ""}
-    <h1 class="vtitle">${esc(g.nome)}</h1>
-    <div class="chips">${[g.plataforma,g.regiao,g.completude,g.conservacao].filter(Boolean).map(c=>`<span class="chip">${esc(c)}</span>`).join("")}</div>
-    <div class="cmp"><dl>
-      <dt>Valor pago</dt><dd>${g.precoPago!=null?brl(g.precoPago):"—"}</dd>
-      ${g.dataCompra?`<dt>Comprado em</dt><dd>${dataBR(g.dataCompra)}</dd>`:""}
-      ${g.onde?`<dt>Onde</dt><dd>${esc(g.onde)}</dd>`:""}
-      <dt>PriceCharting${g.pcTipo?` (${esc(g.pcTipo)})`:""}</dt><dd>${g.pcValor!=null?usd(g.pcValor):"—"}</dd>
-      ${g.pcData?`<dt>Cotado em</dt><dd>${dataBR(g.pcData)}</dd>`:""}
-      <dt>Em reais (US$ 1 = ${brl(cfg.cotacao)})</dt><dd>${m!=null?brl(m):"—"}</dd>
-      <dt class="tot">Diferença</dt><dd class="tot ${d==null?"":d>=0?"pos":"neg"}">${d==null?"—":(d>=0?"+":"")+brl(d)}</dd>
-    </dl></div>
+    ${g.fotos.length ? `<div class="gallery">${g.fotos.map(f=>`<button data-ph-open="${f}"><img data-ph="${f}" alt="Foto de ${esc(g.nome)}"></button>`).join("")}</div>` : ""}
+    <h1 class="vtitle">${g.fav?'<span class="star">★</span> ':""}${esc(g.nome)}</h1>
+    <div class="chips">${[g.tipo,STL[g.status],g.plataforma,g.regiao,g.edicao,g.genero,g.completude,g.conservacao].filter(Boolean).map(c=>`<span class="chip">${esc(c)}</span>`).join("")}${g.tags.map(t=>`<span class="chip tag">${esc(t)}</span>`).join("")}</div>
+    <div class="card"><dl>${linhas.join("")}</dl></div>
+    ${venda}
+    <div class="card"><h3>Histórico de cotações</h3>
+      ${lineChart(hist.map(h=>({x:h.data,y:h.valor})), usd)}
+      ${hist.length ? `<ul class="hist">${hist.slice().reverse().map(h=>`<li><span>${dataBR(h.data)}${h.tipo?` · ${esc(h.tipo)}`:""}</span><b>${usd(h.valor)}</b><button data-hdel="${h.data}" aria-label="Apagar cotação de ${dataBR(h.data)}">✕</button></li>`).join("")}</ul>` : `<p class="hint">Nenhuma cotação registrada.</p>`}
+    </div>
     ${g.notas?`<div class="notes">${esc(g.notas)}</div>`:""}
-    <div class="stack">
-      <a class="btn" href="${pcSearch(g.nome, g.plataforma)}" target="_blank" rel="noopener">Ver no PriceCharting</a>
-      <button class="btn danger" id="vDel">Excluir jogo</button>
-    </div>`;
+    <div class="stack" style="margin-bottom:8px">${pcButtons()}</div>
+    <div class="stack">${acoes.join("")}</div>`;
   hydrate(body);
   openDlg($("#dlgView"));
 }
 $("#vBack").onclick = () => closeDlg($("#dlgView"));
 $("#vEdit").onclick = () => { closeDlg($("#dlgView")); openEdit(viewing); };
 $("#vBody").addEventListener("click", async e => {
+  const g = games.find(x=>x.id===viewing); if (!g) return;
   const ph = e.target.closest("[data-ph-open]");
   if (ph){ $("#lb img").src = await photoURL(ph.dataset.phOpen); $("#lb").classList.add("on"); return; }
+  const pc = e.target.closest("[data-pc]"); if (pc) { pcAction(pc.dataset.pc, g); return; }
+  const mv = e.target.closest("[data-mv]");
+  if (mv){ closeDlg($("#dlgView")); openEdit(g.id, { status: mv.dataset.mv }); return; }
+  const hd = e.target.closest("[data-hdel]");
+  if (hd){
+    if (!confirm(`Apagar a cotação de ${dataBR(hd.dataset.hdel)}?`)) return;
+    g.pcHist = g.pcHist.filter(h => h.data !== hd.dataset.hdel);
+    const ult = [...g.pcHist].sort((a,b)=>a.data.localeCompare(b.data)).pop();
+    g.pcValor = ult ? ult.valor : null; g.pcData = ult ? ult.data : ""; g.pcTipo = ult ? ult.tipo : g.pcTipo;
+    await idb.put("games", g); await reload(); showView(g.id); return;
+  }
+  if (e.target.id === "vFav"){ g.fav = !g.fav; await idb.put("games", g); await reload(); showView(g.id); return; }
   if (e.target.id === "vDel"){
-    const g = games.find(x=>x.id===viewing); if (!g) return;
     if (!confirm(`Excluir “${g.nome}” e suas fotos?`)) return;
-    try { await idb.del("games", g.id); await dropPhotos(g.fotos||[]); closeDlg($("#dlgView")); await reload(); toast("Jogo excluído"); }
-    catch(err){ toast("Não foi possível excluir."); }
+    try { await idb.del("games", g.id); await dropPhotos(g.fotos); closeDlg($("#dlgView")); await reload(); toast("Item excluído"); }
+    catch { toast("Não foi possível excluir."); }
   }
 });
 $("#lbClose").onclick = () => $("#lb").classList.remove("on");
 $("#lb").addEventListener("click", e => { if (e.target.id==="lb") $("#lb").classList.remove("on"); });
 
-/* ---------- Edição ---------- */
+/* ================= Edição ================= */
 function setSeg(el, v){ el.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v))); }
-document.querySelectorAll(".seg").forEach(seg => seg.addEventListener("click", e => {
+function applyStatus(){ document.querySelectorAll("#dlgEdit [data-show]").forEach(el => el.hidden = !el.dataset.show.split(" ").includes(draft.status)); }
+document.querySelectorAll("#dlgEdit .seg").forEach(seg => seg.addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
-  const f = seg.dataset.field; draft[f] = draft[f] === b.dataset.v ? "" : b.dataset.v; setSeg(seg, draft[f]);
+  const f = seg.dataset.field;
+  draft[f] = (draft[f] === b.dataset.v && !seg.hasAttribute("data-required")) ? "" : b.dataset.v;
+  setSeg(seg, draft[f]);
+  if (f === "status") { applyStatus(); if (draft.status==="vendido" && !$("#iDataVenda").value) $("#iDataVenda").value = hoje(); }
 }));
-function updPcLink(){ $("#pcLink").href = pcSearch($("#iNome").value, $("#iPlat").value); }
-["#iNome","#iPlat"].forEach(s => $(s).addEventListener("input", updPcLink));
+function parseTags(s){ return uniq(s.split(",").map(t => t.trim()).filter(Boolean)); }
+function renderTagPick(){
+  const cur = parseTags($("#iTags").value);
+  const opts = allTags().filter(t => !cur.includes(t));
+  $("#tagPick").innerHTML = opts.map(t => `<button type="button" data-t="${esc(t)}">+ ${esc(t)}</button>`).join("");
+}
+$("#iTags").addEventListener("input", renderTagPick);
+$("#tagPick").addEventListener("click", e => {
+  const b = e.target.closest("[data-t]"); if (!b) return;
+  const cur = parseTags($("#iTags").value); cur.push(b.dataset.t); $("#iTags").value = cur.join(", "); renderTagPick();
+});
+$("#ePcBtns").addEventListener("click", e => {
+  const b = e.target.closest("[data-pc]"); if (!b) return;
+  pcAction(b.dataset.pc, { nome: $("#iNome").value.trim(), plataforma: $("#iPlat").value.trim() });
+});
 
-function openEdit(id){
+function openEdit(id, preset = {}){
   const g = id ? games.find(x=>x.id===id) : null;
   editing = g ? g.id : null;
-  draft = g ? { ...g, fotos:[...(g.fotos||[])] } : { fotos:[], completude:"", conservacao:"", pcTipo:"" };
-  origFotos = g ? [...(g.fotos||[])] : [];
-  $("#eTitle").textContent = g ? "Editar jogo" : "Novo jogo";
+  draft = g ? { ...g, fotos:[...g.fotos], pcHist:[...g.pcHist] } : { fotos:[], pcHist:[], tipo:"Jogo", status: tab, completude:"", conservacao:"", pcTipo:"" };
+  Object.assign(draft, preset);
+  origFotos = g ? [...g.fotos] : [];
+  $("#eTitle").textContent = g ? "Editar item" : "Novo item";
   $("#iNome").value = draft.nome||""; $("#iPlat").value = draft.plataforma||""; $("#iReg").value = draft.regiao||"";
+  $("#iGen").value = draft.genero||""; $("#iEd").value = draft.edicao||""; $("#iFav").checked = !!draft.fav;
+  $("#iTags").value = (draft.tags||[]).join(", ");
   $("#iPago").value = fmtIn(draft.precoPago); $("#iData").value = draft.dataCompra||""; $("#iOnde").value = draft.onde||"";
+  $("#iAlvo").value = fmtIn(draft.precoAlvo);
+  $("#iVenda").value = fmtIn(draft.valorVenda); $("#iDataVenda").value = draft.dataVenda || (draft.status==="vendido" ? hoje() : ""); $("#iOndeVenda").value = draft.ondeVenda||"";
   $("#iPc").value = draft.pcValor!=null ? String(draft.pcValor) : ""; $("#iPcData").value = draft.pcData||"";
   $("#iNotas").value = draft.notas||"";
+  setSeg($("#segTipo"), draft.tipo); setSeg($("#segStatus"), draft.status);
   setSeg($("#segComp"), draft.completude); setSeg($("#segCons"), draft.conservacao); setSeg($("#segPc"), draft.pcTipo);
-  updPcLink(); renderPhotos();
+  $("#ePcBtns").innerHTML = pcButtons();
+  applyStatus(); renderTagPick(); renderPhotos();
   openDlg($("#dlgEdit"));
 }
 function renderPhotos(){
@@ -471,33 +754,51 @@ async function onPhotos(e){
   uploading += files.length; renderPhotos(); $("#eSave").disabled = true;
   for (const f of files){
     try { const b = await shrink(f); const id = uid(); await idb.put("photos", b, id); draft.fotos.push(id); }
-    catch(err){ toast("Não foi possível processar uma das fotos."); }
+    catch { toast("Não foi possível processar uma das fotos."); }
     uploading--; renderPhotos();
   }
   $("#eSave").disabled = uploading > 0;
 }
-$("#eCancel").onclick = async () => {
+$("#eCancel").onclick = () => {
   const novas = draft.fotos.filter(f => !origFotos.includes(f));
   closeDlg($("#dlgEdit")); dropPhotos(novas);
 };
 $("#eSave").onclick = async () => {
   const nome = $("#iNome").value.trim();
-  if (!nome){ toast("Informe o nome do jogo."); $("#iNome").focus(); return; }
+  if (!nome){ toast("Informe o nome."); $("#iNome").focus(); return; }
+  const pcValor = num($("#iPc").value);
+  let pcData = $("#iPcData").value;
+  const hist = [...(draft.pcHist||[])];
+  if (pcValor != null){
+    if (!pcData) pcData = hoje();
+    const tipo = draft.pcTipo||"";
+    const i = hist.findIndex(h => h.data === pcData);
+    if (i >= 0) hist[i] = { data: pcData, valor: pcValor, tipo };
+    else hist.push({ data: pcData, valor: pcValor, tipo });
+    hist.sort((a,b)=>a.data.localeCompare(b.data));
+  }
   const data = {
     id: editing || uid(),
+    tipo: draft.tipo||"Jogo", status: draft.status||"colecao",
     nome, plataforma: $("#iPlat").value.trim(), regiao: $("#iReg").value,
+    genero: $("#iGen").value.trim(), edicao: $("#iEd").value.trim(), fav: $("#iFav").checked,
+    tags: parseTags($("#iTags").value),
     completude: draft.completude||"", conservacao: draft.conservacao||"",
     precoPago: num($("#iPago").value), dataCompra: $("#iData").value, onde: $("#iOnde").value.trim(),
-    pcValor: num($("#iPc").value), pcData: $("#iPcData").value, pcTipo: draft.pcTipo||"",
+    precoAlvo: num($("#iAlvo").value),
+    valorVenda: num($("#iVenda").value), dataVenda: $("#iDataVenda").value, ondeVenda: $("#iOndeVenda").value.trim(),
+    pcValor, pcData: pcValor!=null ? pcData : "", pcTipo: draft.pcTipo||"", pcHist: hist,
     notas: $("#iNotas").value.trim(), fotos: draft.fotos,
     criadoEm: draft.criadoEm || Date.now(), atualizadoEm: Date.now()
   };
+  if (data.status === "colecao" && !data.dataCompra && draft.status === "colecao" && editing && games.find(g=>g.id===editing)?.status === "desejo") data.dataCompra = hoje();
   $("#eSave").disabled = true;
   try {
     await idb.put("games", data);
-    const removidas = origFotos.filter(f => !data.fotos.includes(f));
-    await dropPhotos(removidas);
-    closeDlg($("#dlgEdit")); await reload(); toast(editing ? "Alterações salvas" : "Jogo adicionado");
+    await dropPhotos(origFotos.filter(f => !data.fotos.includes(f)));
+    closeDlg($("#dlgEdit"));
+    if (data.status !== tab) { tab = data.status; document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-selected", String(x.dataset.st === tab))); }
+    await reload(); toast(editing ? "Alterações salvas" : "Item adicionado");
     if (navigator.storage?.persist) navigator.storage.persist().catch(()=>{});
   } catch(err){
     toast(err?.name === "QuotaExceededError" ? "Sem espaço no celular para salvar." : "Não foi possível salvar. Tente de novo.");
@@ -505,7 +806,42 @@ $("#eSave").onclick = async () => {
 };
 $("#btnAdd").onclick = () => openEdit(null);
 
-/* ---------- Ajustes e backup ---------- */
+/* ================= Relatórios ================= */
+function collectionSeries(){
+  const col = games.filter(g => g.status === "colecao" && g.pcHist.length);
+  const dates = uniq(col.flatMap(g => g.pcHist.map(h => h.data)));
+  return dates.map(d => ({ x: d, y: col.reduce((a,g) => {
+    const h = g.pcHist.filter(h => h.data <= d).sort((a,b)=>a.data.localeCompare(b.data)).pop();
+    return a + (h ? h.valor : 0);
+  }, 0) * (cfg.cotacao||0) }));
+}
+function openReport(){
+  const col = games.filter(g => g.status === "colecao");
+  const ven = games.filter(g => g.status === "vendido");
+  const grp = (arr, key) => {
+    const m = new Map();
+    arr.forEach(g => { const k = g[key] || "Sem informação"; const r = m.get(k) || { n:0, pago:0, merc:0 };
+      r.n++; r.pago += g.precoPago||0; r.merc += mercado(g)||0; m.set(k, r); });
+    return [...m.entries()].sort((a,b)=>b[1].merc-a[1].merc || b[1].n-a[1].n);
+  };
+  const tabela = (rows) => `<div class="scroll"><table class="rep"><thead><tr><th></th><th class="n">Itens</th><th class="n">Investido</th><th class="n">Mercado</th></tr></thead><tbody>${
+    rows.map(([k,r])=>`<tr><td>${esc(k)}</td><td class="n">${r.n}</td><td class="n">${brl(r.pago)}</td><td class="n">${brl(r.merc)}</td></tr>`).join("")}</tbody></table></div>`;
+  const top = col.filter(g => ganho(g)!=null && g.precoPago).sort((a,b)=>ganho(b)/b.precoPago-ganho(a)/a.precoPago).slice(0,5);
+  const vend = ven.reduce((a,g)=>a+(g.valorVenda||0),0), lucro = ven.reduce((a,g)=>a+(lucroVenda(g)||0),0);
+  $("#rBody").innerHTML = `
+    <div class="card"><h3>Evolução do valor da coleção</h3>
+      ${lineChart(collectionSeries(), brl)}
+      <p class="hint">Soma da última cotação de cada item até cada data, convertida pela cotação atual do dólar (${brl(cfg.cotacao)}).</p></div>
+    <div class="card"><h3>Por plataforma</h3>${col.length ? tabela(grp(col,"plataforma")) : `<p class="hint">Sem itens na coleção.</p>`}</div>
+    <div class="card"><h3>Por tipo</h3>${col.length ? tabela(grp(col,"tipo")) : `<p class="hint">Sem itens na coleção.</p>`}</div>
+    <div class="card"><h3>Maiores valorizações</h3>${top.length ? `<dl>${top.map(g=>`<dt>${esc(g.nome)}</dt><dd class="${ganho(g)>=0?"pos":"neg"}">${pct(ganho(g)/g.precoPago*100)}</dd>`).join("")}</dl>` : `<p class="hint">Preencha valor pago e cotação para ver as valorizações.</p>`}</div>
+    <div class="card"><h3>Vendas</h3><dl><dt>Itens vendidos</dt><dd>${ven.length}</dd><dt>Total vendido</dt><dd>${brl(vend)}</dd><dt class="tot">Lucro realizado</dt><dd class="tot ${lucro>=0?"pos":"neg"}">${sinal(lucro)}</dd></dl></div>`;
+  openDlg($("#dlgRep"));
+}
+$("#btnRep").onclick = openReport;
+$("#rClose").onclick = () => closeDlg($("#dlgRep"));
+
+/* ================= Ajustes e backup ================= */
 async function storageInfo(){
   if (!navigator.storage?.estimate) return;
   const { usage } = await navigator.storage.estimate();
@@ -519,14 +855,13 @@ $("#cSave").onclick = async () => {
   if (!c || c <= 0){ toast("Informe uma cotação válida."); return; }
   cfg.cotacao = c; await idb.put("config", cfg, "app"); render(); toast("Cotação atualizada");
 };
-
 const toDataURL = b => new Promise((res,rej)=>{ const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(b); });
 $("#bExport").onclick = async () => {
   const btn = $("#bExport"); btn.disabled = true; btn.textContent = "Gerando backup…";
   try {
     const fotos = {};
-    for (const g of games) for (const id of g.fotos||[]) { const b = await idb.get("photos", id); if (b) fotos[id] = await toDataURL(b); }
-    const json = JSON.stringify({ app: "estante", versao: 1, exportadoEm: new Date().toISOString(), cfg, games, fotos });
+    for (const g of games) for (const id of g.fotos) { const b = await idb.get("photos", id); if (b) fotos[id] = await toDataURL(b); }
+    const json = JSON.stringify({ app: "estante", versao: 2, exportadoEm: new Date().toISOString(), cfg, games, fotos });
     const name = `estante-backup-${hoje()}.json`;
     const file = new File([json], name, { type: "application/json" });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -544,28 +879,40 @@ $("#bImport").addEventListener("change", async e => {
   let data;
   try { data = JSON.parse(await f.text()); } catch { toast("Arquivo inválido."); return; }
   if (data?.app !== "estante" || !Array.isArray(data.games)) { toast("Este arquivo não é um backup da Estante."); return; }
-  if (!confirm(`Restaurar ${data.games.length} jogo(s)? A coleção atual deste celular será substituída.`)) return;
+  if (!confirm(`Restaurar ${data.games.length} item(ns)? A coleção atual deste celular será substituída.`)) return;
   try {
     await idb.clear("games"); await idb.clear("photos");
     urls.forEach(u => URL.revokeObjectURL(u)); urls.clear();
     for (const [id, du] of Object.entries(data.fotos || {})) { const b = await (await fetch(du)).blob(); await idb.put("photos", b, id); }
-    for (const g of data.games) await idb.put("games", g);
+    for (const g of data.games) await idb.put("games", norm(g));
     if (data.cfg?.cotacao) { cfg = { ...cfg, ...data.cfg }; await idb.put("config", cfg, "app"); }
     closeDlg($("#dlgCfg")); await reload(); toast("Backup restaurado");
-  } catch(err){ toast("Falha ao restaurar o backup."); }
+  } catch { toast("Falha ao restaurar o backup."); }
 });
 
-/* ---------- Início ---------- */
+/* ================= Início ================= */
+$("#vInfo").textContent = "Versão " + VERSAO;
 (async () => {
   try {
     const c = await idb.get("config", "app"); if (c) cfg = { ...cfg, ...c };
     await reload();
-  } catch(err){
+  } catch {
     $("#notice").innerHTML = `<div class="notice">Não foi possível abrir o armazenamento do celular. Verifique se o navegador não está em modo anônimo.</div>`;
   }
 })();
+try {
+  const ant = localStorage.getItem("estante-versao");
+  if (ant && ant !== VERSAO) setTimeout(() => toast("App atualizado para a versão " + VERSAO), 600);
+  localStorage.setItem("estante-versao", VERSAO);
+} catch(_) {}
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-  navigator.serviceWorker.register("sw.js").catch(()=>{});
+  const tinhaControle = !!navigator.serviceWorker.controller;
+  let recarregou = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!tinhaControle || recarregou) return;
+    recarregou = true; location.reload();
+  });
+  navigator.serviceWorker.register("sw.js").then(r => r.update()).catch(()=>{});
 }
 </script>
 </body>

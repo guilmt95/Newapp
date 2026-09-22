@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4B3F9E">
+<title>Estante · Coleção de games</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#E9E7E1;--surface:#F7F6F2;--ink:#1F1D2B;--muted:#686577;--line:#D2CFC6;
+  --accent:#4B3F9E;--accent-ink:#fff;--gain:#2B7A4B;--loss:#B0363A;--chip:#E0DDF3;
+  --sum-pos:#7FDCA3;--sum-neg:#FF9EA0;
+  --display:"SamsungOne","Roboto Flex","Segoe UI Variable Display",system-ui,-apple-system,sans-serif;
+  --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#16151D;--surface:#221F2D;--ink:#EEEBF6;--muted:#9B97AC;--line:#353149;
+    --accent:#A195F2;--accent-ink:#16151D;--gain:#63C98C;--loss:#F07C7F;--chip:#322D4D;
+    --sum-pos:#1E6B40;--sum-neg:#A12A2E;
+  }
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--body);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto;padding:12px 16px 110px}
+
+.top{display:flex;align-items:center;justify-content:space-between;padding:6px 0 14px}
+.brand{font:800 26px/1 var(--display);letter-spacing:-.02em}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:12px;width:42px;height:42px;display:grid;place-items:center;font-size:18px}
+
+.summary{background:var(--ink);color:var(--bg);border-radius:22px;padding:20px 20px 16px}
+.summary .lbl{font-size:14px;opacity:.75}
+.summary .big{font:800 clamp(36px,11vw,52px)/1.05 var(--display);letter-spacing:-.03em;margin:4px 0 14px;word-break:break-word}
+.summary .row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;border-top:1px solid color-mix(in srgb,var(--bg) 22%,transparent);padding-top:12px}
+.summary .row span{display:block;font-size:13px;opacity:.7}
+.summary .row b{font-weight:600;font-size:15px}
+.pos{color:var(--gain)}.neg{color:var(--loss)}
+.summary .pos{color:var(--sum-pos)}.summary .neg{color:var(--sum-neg)}
+
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 10px}
+.tools input{grid-column:1/-1}
+.field,.tools input,.tools select{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 12px;min-height:46px}
+.notice{background:var(--chip);border-radius:12px;padding:12px 14px;margin-top:14px;font-size:15px}
+
+.list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.item{display:grid;grid-template-columns:68px 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:8px 12px 8px 8px;width:100%;text-align:left}
+.thumb{width:68px;height:68px;border-radius:11px;background:var(--chip);display:grid;place-items:center;font:800 22px var(--display);color:var(--accent);overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.item h3{margin:0;font:600 16px/1.25 var(--body);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.meta{font-size:13px;color:var(--muted);margin-top:2px}
+.vals{text-align:right;font-size:13px;color:var(--muted);white-space:nowrap}
+.vals b{display:block;font-size:15px;color:var(--ink);font-weight:600}
+.empty{text-align:center;color:var(--muted);padding:40px 12px}
+.empty b{display:block;font:800 22px var(--display);color:var(--ink);margin-bottom:6px}
+
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:15px 26px;font-weight:600;font-size:16px;box-shadow:0 8px 24px color-mix(in srgb,var(--accent) 35%,transparent)}
+
+dialog{border:0;padding:0;margin:0 auto;width:100%;max-width:640px;height:100%;max-height:100%;background:var(--bg);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.sheet{display:flex;flex-direction:column;height:100%}
+.sheet-head{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;background:var(--bg);border-bottom:1px solid var(--line);z-index:2}
+.sheet-head h2{margin:0;font:800 20px var(--display);flex:1;text-align:center}
+.sheet-body{flex:1;overflow-y:auto;padding:16px 16px calc(32px + env(safe-area-inset-bottom,0px))}
+.txtbtn{background:none;border:0;padding:8px 4px;color:var(--accent);font-weight:600;min-width:72px}
+.txtbtn.l{text-align:left}.txtbtn.r{text-align:right}
+.txtbtn:disabled{opacity:.4}
+
+.grp{margin-bottom:20px}
+.grp h4{margin:0 0 8px;font:600 14px var(--body);color:var(--muted)}
+label.f{display:block;margin-bottom:10px}
+label.f span{display:block;font-size:14px;margin-bottom:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+textarea.field{min-height:80px;resize:vertical}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 13px;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.hint{font-size:13px;color:var(--muted);margin:4px 0 0}
+
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.ph{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--chip)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .x{position:absolute;top:5px;right:5px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:15px;line-height:1}
+.addph{aspect-ratio:1;border:1.5px dashed var(--line);border-radius:12px;display:grid;place-items:center;text-align:center;font-size:13px;color:var(--muted);padding:6px}
+.addph input{display:none}
+.ph.loading{display:grid;place-items:center;font-size:12px;color:var(--muted)}
+
+.btn{display:block;width:100%;text-align:center;border-radius:14px;padding:13px;font-weight:600;border:1px solid var(--line);background:var(--surface);text-decoration:none;color:var(--ink)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger{color:var(--loss)}
+.btn input{display:none}
+.stack{display:grid;gap:8px}
+
+.gallery{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px 16px;padding:0 16px}
+.gallery button{flex:0 0 78%;aspect-ratio:4/3;border:0;padding:0;border-radius:16px;overflow:hidden;scroll-snap-align:center;background:var(--chip)}
+.gallery img{width:100%;height:100%;object-fit:cover;display:block}
+.vtitle{font:800 28px/1.1 var(--display);letter-spacing:-.02em;margin:0 0 4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 18px}
+.chip{background:var(--chip);border-radius:999px;padding:5px 11px;font-size:13px}
+.cmp{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:16px}
+.cmp dl{display:grid;grid-template-columns:1fr auto;gap:8px 12px;margin:0}
+.cmp dt{color:var(--muted);font-size:14px}.cmp dd{margin:0;font-weight:600;text-align:right}
+.cmp .tot{border-top:1px solid var(--line);padding-top:8px}
+.notes{white-space:pre-wrap;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:16px}
+
+.lightbox{position:fixed;inset:0;background:#000;display:none;z-index:50;align-items:center;justify-content:center}
+.lightbox.on{display:flex}
+.lightbox img{max-width:100%;max-height:100%;object-fit:contain}
+.lightbox button{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:12px;border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:999px;padding:8px 14px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:60;max-width:90%}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Estante</div>
+    <button class="iconbtn" id="btnCfg" aria-label="Ajustes e backup">⚙︎</button>
+  </header>
+
+  <section class="summary" aria-label="Resumo da coleção">
+    <div class="lbl">Valor de mercado estimado</div>
+    <div class="big" id="sMercado">R$ 0,00</div>
+    <div class="row">
+      <div><span>Investido</span><b id="sPago">R$ 0,00</b></div>
+      <div><span>Diferença</span><b id="sDif">—</b></div>
+      <div><span>Itens</span><b id="sQtd">0</b></div>
+    </div>
+  </section>
+  <div id="notice"></div>
+
+  <div class="tools">
+    <input id="q" type="search" placeholder="Buscar pelo nome" aria-label="Buscar">
+    <select id="fPlat" aria-label="Filtrar plataforma"><option value="">Todas as plataformas</option></select>
+    <select id="sort" aria-label="Ordenar">
+      <option value="recent">Mais recentes</option>
+      <option value="name">Nome (A–Z)</option>
+      <option value="market">Maior valor de mercado</option>
+      <option value="paid">Maior valor pago</option>
+    </select>
+  </div>
+
+  <ul class="list" id="list"></ul>
+  <div class="empty" id="empty" hidden><b>Sua estante está vazia</b>Toque em “Adicionar jogo” para catalogar o primeiro item.</div>
+</div>
+
+<button class="fab" id="btnAdd">+ Adicionar jogo</button>
+
+<dialog id="dlgEdit">
+  <div class="sheet">
+    <div class="sheet-head">
+      <button class="txtbtn l" id="eCancel">Cancelar</button>
+      <h2 id="eTitle">Novo jogo</h2>
+      <button class="txtbtn r" id="eSave">Salvar</button>
+    </div>
+    <div class="sheet-body">
+      <div class="grp">
+        <label class="f"><span>Nome do jogo</span><input class="field" id="iNome" autocomplete="off"></label>
+        <div class="two">
+          <label class="f"><span>Plataforma</span><input class="field" id="iPlat" list="plats" autocomplete="off"></label>
+          <label class="f"><span>Região</span>
+            <select class="field" id="iReg"><option value="">—</option><option>NTSC-U (EUA)</option><option>NTSC-J (Japão)</option><option>PAL (Europa)</option><option>Brasil</option></select>
+          </label>
+        </div>
+        <datalist id="plats"></datalist>
+      </div>
+
+      <div class="grp">
+        <h4>O que acompanha o item</h4>
+        <div class="seg" id="segComp" data-field="completude">
+          <button type="button" data-v="Lacrado">Lacrado</button>
+          <button type="button" data-v="Completo (CIB)">Completo (CIB)</button>
+          <button type="button" data-v="Jogo + caixa">Jogo + caixa</button>
+          <button type="button" data-v="Só o jogo (loose)">Só o jogo (loose)</button>
+        </div>
+      </div>
+      <div class="grp">
+        <h4>Estado de conservação</h4>
+        <div class="seg" id="segCons" data-field="conservacao">
+          <button type="button" data-v="Excelente">Excelente</button>
+          <button type="button" data-v="Muito bom">Muito bom</button>
+          <button type="button" data-v="Bom">Bom</button>
+          <button type="button" data-v="Regular">Regular</button>
+          <button type="button" data-v="Ruim">Ruim</button>
+        </div>
+      </div>
+
+      <div class="grp">
+        <h4>Fotos do estado do item</h4>
+        <div class="photos" id="ePhotos"></div>
+        <p class="hint">As fotos são reduzidas e ficam guardadas só neste celular.</p>
+      </div>
+
+      <div class="grp">
+        <h4>Aquisição</h4>
+        <div class="two">
+          <label class="f"><span>Valor pago (R$)</span><input class="field" id="iPago" inputmode="decimal" placeholder="0,00"></label>
+          <label class="f"><span>Data da compra</span><input class="field" id="iData" type="date"></label>
+        </div>
+        <label class="f"><span>Onde comprou</span><input class="field" id="iOnde" placeholder="Loja, feira, OLX…"></label>
+      </div>
+
+      <div class="grp">
+        <h4>Referência PriceCharting</h4>
+        <a class="btn" id="pcLink" href="#" target="_blank" rel="noopener">Consultar no PriceCharting</a>
+        <p class="hint">Precisa de internet. Abre a busca pelo nome e plataforma; copie o valor do estado do seu item.</p>
+        <div class="two" style="margin-top:10px">
+          <label class="f"><span>Valor (US$)</span><input class="field" id="iPc" inputmode="decimal" placeholder="0.00"></label>
+          <label class="f"><span>Cotação de</span><input class="field" id="iPcData" type="date"></label>
+        </div>
+        <div class="seg" id="segPc" data-field="pcTipo">
+          <button type="button" data-v="Loose">Loose</button>
+          <button type="button" data-v="CIB">CIB</button>
+          <button type="button" data-v="New">New</button>
+          <button type="button" data-v="Graded">Graded</button>
+        </div>
+      </div>
+
+      <div class="grp">
+        <label class="f"><span>Observações</span><textarea class="field" id="iNotas" placeholder="Arranhões, etiqueta, manual rasgado…"></textarea></label>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="dlgView">
+  <div class="sheet">
+    <div class="sheet-head">
+      <button class="txtbtn l" id="vBack">Voltar</button>
+      <h2></h2>
+      <button class="txtbtn r" id="vEdit">Editar</button>
+    </div>
+    <div class="sheet-body" id="vBody"></div>
+  </div>
+</dialog>
+
+<dialog id="dlgCfg">
+  <div class="sheet">
+    <div class="sheet-head">
+      <button class="txtbtn l" id="cClose">Fechar</button>
+      <h2>Ajustes</h2>
+      <span style="min-width:72px"></span>
+    </div>
+    <div class="sheet-body">
+      <div class="grp">
+        <h4>Conversão</h4>
+        <label class="f"><span>Cotação do dólar (R$ por US$ 1)</span><input class="field" id="iCot" inputmode="decimal"></label>
+        <button class="btn pri" id="cSave">Salvar cotação</button>
+        <p class="hint">Usada para converter os valores do PriceCharting em reais.</p>
+      </div>
+      <div class="grp">
+        <h4>Backup</h4>
+        <div class="stack">
+          <button class="btn" id="bExport">Exportar backup</button>
+          <label class="btn">Restaurar backup<input type="file" id="bImport" accept="application/json,.json"></label>
+        </div>
+        <p class="hint" id="bInfo">A coleção fica só neste celular. Exporte um backup de vez em quando e guarde no Drive ou no PC; desinstalar o app ou limpar os dados apaga tudo.</p>
+        <p class="hint" id="sInfo"></p>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<div class="lightbox" id="lb"><img alt=""><button id="lbClose">Fechar</button></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------- Armazenamento local (IndexedDB) ---------- */
+const idb = (() => {
+  let p;
+  const open = () => p ||= new Promise((res, rej) => {
+    const r = indexedDB.open("estante", 1);
+    r.onupgradeneeded = () => { const d = r.result;
+      d.createObjectStore("games", { keyPath: "id" }); d.createObjectStore("photos"); d.createObjectStore("config"); };
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+  async function tx(store, mode, fn){
+    const d = await open();
+    return new Promise((res, rej) => {
+      const t = d.transaction(store, mode), s = t.objectStore(store); let out;
+      const r = fn(s); if (r) r.onsuccess = () => { out = r.result; };
+      t.oncomplete = () => res(out); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+    });
+  }
+  return {
+    all: s => tx(s, "readonly", st => st.getAll()),
+    keys: s => tx(s, "readonly", st => st.getAllKeys()),
+    get: (s, k) => tx(s, "readonly", st => st.get(k)),
+    put: (s, v, k) => tx(s, "readwrite", st => k === undefined ? st.put(v) : st.put(v, k)),
+    del: (s, k) => tx(s, "readwrite", st => st.delete(k)),
+    clear: s => tx(s, "readwrite", st => st.clear())
+  };
+})();
+
+const $ = s => document.querySelector(s);
+const PLATS = ["Atari 2600","NES","Super Nintendo","Nintendo 64","GameCube","Wii","Wii U","Nintendo Switch","Game Boy","Game Boy Color","Game Boy Advance","Nintendo DS","Nintendo 3DS","Master System","Mega Drive","Sega Saturn","Dreamcast","Game Gear","PlayStation","PlayStation 2","PlayStation 3","PlayStation 4","PlayStation 5","PSP","PS Vita","Xbox","Xbox 360","Xbox One","Xbox Series X","Neo Geo","TurboGrafx-16","PC"];
+let games = [], cfg = { cotacao: 5.40 };
+let editing = null, viewing = null, draft = {}, origFotos = [], uploading = 0;
+const urls = new Map();
+
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+const brl = n => (n ?? 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const usd = n => (n ?? 0).toLocaleString("en-US", { style: "currency", currency: "USD" });
+const num = v => { if (v == null) return null; const s = String(v).trim().replace(/\s/g,""); if (!s) return null;
+  const n = parseFloat(s.includes(",") ? s.replace(/\./g,"").replace(",",".") : s); return isFinite(n) ? n : null; };
+const fmtIn = n => n == null ? "" : String(n).replace(".", ",");
+const mercado = g => g.pcValor != null ? g.pcValor * (cfg.cotacao || 0) : null;
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const dataBR = d => d ? d.split("-").reverse().join("/") : "";
+const hoje = () => new Date().toISOString().slice(0,10);
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("on"),2800); }
+function openDlg(d){ if (!d.open) d.showModal(); }
+function closeDlg(d){ if (d.open) d.close(); }
+
+async function photoURL(id){
+  if (urls.has(id)) return urls.get(id);
+  const b = await idb.get("photos", id);
+  const u = b ? URL.createObjectURL(b) : "";
+  urls.set(id, u); return u;
+}
+function hydrate(root){ root.querySelectorAll("img[data-ph]").forEach(async img => { img.src = await photoURL(img.dataset.ph); }); }
+async function dropPhotos(ids){
+  for (const id of ids){ try { await idb.del("photos", id); } catch(_){} const u = urls.get(id); if (u) URL.revokeObjectURL(u); urls.delete(id); }
+}
+async function reload(){ games = await idb.all("games"); render(); }
+
+$("#plats").innerHTML = PLATS.map(p => `<option value="${p}">`).join("");
+
+/* ---------- Lista ---------- */
+function render(){
+  const pago = games.reduce((a,g)=>a+(g.precoPago||0),0);
+  const comRef = games.filter(g => g.pcValor != null);
+  const merc = comRef.reduce((a,g)=>a+mercado(g),0);
+  const pagoRef = comRef.reduce((a,g)=>a+(g.precoPago||0),0);
+  $("#sMercado").textContent = brl(merc);
+  $("#sPago").textContent = brl(pago);
+  $("#sQtd").textContent = games.length;
+  const dif = $("#sDif");
+  if (comRef.length){ const d = merc - pagoRef; dif.textContent = (d>=0?"+":"") + brl(d); dif.className = d>=0?"pos":"neg"; }
+  else { dif.textContent = "—"; dif.className = ""; }
+
+  const plats = [...new Set(games.map(g=>g.plataforma).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR"));
+  const sel = $("#fPlat"), cur = sel.value;
+  sel.innerHTML = `<option value="">Todas as plataformas</option>` + plats.map(p=>`<option ${p===cur?"selected":""}>${esc(p)}</option>`).join("");
+
+  const q = $("#q").value.trim().toLowerCase(), fp = sel.value, so = $("#sort").value;
+  const arr = games.filter(g => (!q || (g.nome||"").toLowerCase().includes(q)) && (!fp || g.plataforma === fp));
+  const by = {
+    recent:(a,b)=>(b.criadoEm||0)-(a.criadoEm||0),
+    name:(a,b)=>(a.nome||"").localeCompare(b.nome||"","pt-BR"),
+    market:(a,b)=>(mercado(b)??-1)-(mercado(a)??-1),
+    paid:(a,b)=>(b.precoPago||0)-(a.precoPago||0)
+  };
+  arr.sort(by[so]);
+  $("#empty").hidden = games.length > 0;
+  const list = $("#list");
+  list.innerHTML = arr.map(g => {
+    const m = mercado(g);
+    const th = g.fotos?.length ? `<img data-ph="${g.fotos[0]}" alt="">` : esc((g.nome||"?").trim().charAt(0).toUpperCase());
+    const meta = [g.plataforma, g.completude].filter(Boolean).map(esc).join(" / ");
+    return `<li><button class="item" data-id="${g.id}">
+      <span class="thumb">${th}</span>
+      <span><h3>${esc(g.nome)}</h3><div class="meta">${meta||"&nbsp;"}</div></span>
+      <span class="vals"><b>${m!=null?brl(m):"—"}</b>pago ${g.precoPago!=null?brl(g.precoPago):"—"}</span>
+    </button></li>`;
+  }).join("") || (games.length ? `<li class="empty">Nenhum jogo encontrado com esse filtro.</li>` : "");
+  hydrate(list);
+}
+["#q","#fPlat","#sort"].forEach(s => $(s).addEventListener("input", render));
+$("#list").addEventListener("click", e => { const b = e.target.closest(".item"); if (b) showView(b.dataset.id); });
+
+/* ---------- Detalhe ---------- */
+function pcSearch(nome, plat){ return "https://www.pricecharting.com/search-products?type=prices&q=" + encodeURIComponent(`${nome||""} ${plat||""}`.trim()); }
+function showView(id){
+  const g = games.find(x=>x.id===id); if (!g) return; viewing = id;
+  const m = mercado(g), d = (m!=null && g.precoPago!=null) ? m - g.precoPago : null;
+  const body = $("#vBody");
+  body.innerHTML = `
+    ${g.fotos?.length ? `<div class="gallery">${g.fotos.map(f=>`<button data-ph-open="${f}"><img data-ph="${f}" alt="Foto de ${esc(g.nome)}"></button>`).join("")}</div>` : ""}
+    <h1 class="vtitle">${esc(g.nome)}</h1>
+    <div class="chips">${[g.plataforma,g.regiao,g.completude,g.conservacao].filter(Boolean).map(c=>`<span class="chip">${esc(c)}</span>`).join("")}</div>
+    <div class="cmp"><dl>
+      <dt>Valor pago</dt><dd>${g.precoPago!=null?brl(g.precoPago):"—"}</dd>
+      ${g.dataCompra?`<dt>Comprado em</dt><dd>${dataBR(g.dataCompra)}</dd>`:""}
+      ${g.onde?`<dt>Onde</dt><dd>${esc(g.onde)}</dd>`:""}
+      <dt>PriceCharting${g.pcTipo?` (${esc(g.pcTipo)})`:""}</dt><dd>${g.pcValor!=null?usd(g.pcValor):"—"}</dd>
+      ${g.pcData?`<dt>Cotado em</dt><dd>${dataBR(g.pcData)}</dd>`:""}
+      <dt>Em reais (US$ 1 = ${brl(cfg.cotacao)})</dt><dd>${m!=null?brl(m):"—"}</dd>
+      <dt class="tot">Diferença</dt><dd class="tot ${d==null?"":d>=0?"pos":"neg"}">${d==null?"—":(d>=0?"+":"")+brl(d)}</dd>
+    </dl></div>
+    ${g.notas?`<div class="notes">${esc(g.notas)}</div>`:""}
+    <div class="stack">
+      <a class="btn" href="${pcSearch(g.nome, g.plataforma)}" target="_blank" rel="noopener">Ver no PriceCharting</a>
+      <button class="btn danger" id="vDel">Excluir jogo</button>
+    </div>`;
+  hydrate(body);
+  openDlg($("#dlgView"));
+}
+$("#vBack").onclick = () => closeDlg($("#dlgView"));
+$("#vEdit").onclick = () => { closeDlg($("#dlgView")); openEdit(viewing); };
+$("#vBody").addEventListener("click", async e => {
+  const ph = e.target.closest("[data-ph-open]");
+  if (ph){ $("#lb img").src = await photoURL(ph.dataset.phOpen); $("#lb").classList.add("on"); return; }
+  if (e.target.id === "vDel"){
+    const g = games.find(x=>x.id===viewing); if (!g) return;
+    if (!confirm(`Excluir “${g.nome}” e suas fotos?`)) return;
+    try { await idb.del("games", g.id); await dropPhotos(g.fotos||[]); closeDlg($("#dlgView")); await reload(); toast("Jogo excluído"); }
+    catch(err){ toast("Não foi possível excluir."); }
+  }
+});
+$("#lbClose").onclick = () => $("#lb").classList.remove("on");
+$("#lb").addEventListener("click", e => { if (e.target.id==="lb") $("#lb").classList.remove("on"); });
+
+/* ---------- Edição ---------- */
+function setSeg(el, v){ el.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v))); }
+document.querySelectorAll(".seg").forEach(seg => seg.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const f = seg.dataset.field; draft[f] = draft[f] === b.dataset.v ? "" : b.dataset.v; setSeg(seg, draft[f]);
+}));
+function updPcLink(){ $("#pcLink").href = pcSearch($("#iNome").value, $("#iPlat").value); }
+["#iNome","#iPlat"].forEach(s => $(s).addEventListener("input", updPcLink));
+
+function openEdit(id){
+  const g = id ? games.find(x=>x.id===id) : null;
+  editing = g ? g.id : null;
+  draft = g ? { ...g, fotos:[...(g.fotos||[])] } : { fotos:[], completude:"", conservacao:"", pcTipo:"" };
+  origFotos = g ? [...(g.fotos||[])] : [];
+  $("#eTitle").textContent = g ? "Editar jogo" : "Novo jogo";
+  $("#iNome").value = draft.nome||""; $("#iPlat").value = draft.plataforma||""; $("#iReg").value = draft.regiao||"";
+  $("#iPago").value = fmtIn(draft.precoPago); $("#iData").value = draft.dataCompra||""; $("#iOnde").value = draft.onde||"";
+  $("#iPc").value = draft.pcValor!=null ? String(draft.pcValor) : ""; $("#iPcData").value = draft.pcData||"";
+  $("#iNotas").value = draft.notas||"";
+  setSeg($("#segComp"), draft.completude); setSeg($("#segCons"), draft.conservacao); setSeg($("#segPc"), draft.pcTipo);
+  updPcLink(); renderPhotos();
+  openDlg($("#dlgEdit"));
+}
+function renderPhotos(){
+  const box = $("#ePhotos");
+  box.innerHTML = draft.fotos.map((f,i)=>`<div class="ph"><img data-ph="${f}" alt=""><button type="button" class="x" data-i="${i}" aria-label="Remover foto">✕</button></div>`).join("")
+    + Array.from({length:uploading},()=>`<div class="ph loading">Processando…</div>`).join("")
+    + `<label class="addph">+ Adicionar fotos<input type="file" accept="image/*" multiple id="phIn"></label>`;
+  hydrate(box);
+  $("#phIn").addEventListener("change", onPhotos);
+}
+$("#ePhotos").addEventListener("click", e => {
+  const x = e.target.closest(".x"); if (!x) return;
+  draft.fotos.splice(+x.dataset.i, 1); renderPhotos();
+});
+async function shrink(file){
+  const MAX = 1600;
+  let src;
+  try { src = await createImageBitmap(file, { imageOrientation: "from-image" }); }
+  catch { src = await new Promise((res,rej)=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=rej; im.src=URL.createObjectURL(file); }); }
+  const w0 = src.width, h0 = src.height, k = Math.min(1, MAX/Math.max(w0,h0));
+  const c = document.createElement("canvas"); c.width = Math.round(w0*k); c.height = Math.round(h0*k);
+  c.getContext("2d").drawImage(src, 0, 0, c.width, c.height);
+  return await new Promise(r => c.toBlob(r, "image/jpeg", 0.82));
+}
+async function onPhotos(e){
+  const files = [...e.target.files]; if (!files.length) return;
+  uploading += files.length; renderPhotos(); $("#eSave").disabled = true;
+  for (const f of files){
+    try { const b = await shrink(f); const id = uid(); await idb.put("photos", b, id); draft.fotos.push(id); }
+    catch(err){ toast("Não foi possível processar uma das fotos."); }
+    uploading--; renderPhotos();
+  }
+  $("#eSave").disabled = uploading > 0;
+}
+$("#eCancel").onclick = async () => {
+  const novas = draft.fotos.filter(f => !origFotos.includes(f));
+  closeDlg($("#dlgEdit")); dropPhotos(novas);
+};
+$("#eSave").onclick = async () => {
+  const nome = $("#iNome").value.trim();
+  if (!nome){ toast("Informe o nome do jogo."); $("#iNome").focus(); return; }
+  const data = {
+    id: editing || uid(),
+    nome, plataforma: $("#iPlat").value.trim(), regiao: $("#iReg").value,
+    completude: draft.completude||"", conservacao: draft.conservacao||"",
+    precoPago: num($("#iPago").value), dataCompra: $("#iData").value, onde: $("#iOnde").value.trim(),
+    pcValor: num($("#iPc").value), pcData: $("#iPcData").value, pcTipo: draft.pcTipo||"",
+    notas: $("#iNotas").value.trim(), fotos: draft.fotos,
+    criadoEm: draft.criadoEm || Date.now(), atualizadoEm: Date.now()
+  };
+  $("#eSave").disabled = true;
+  try {
+    await idb.put("games", data);
+    const removidas = origFotos.filter(f => !data.fotos.includes(f));
+    await dropPhotos(removidas);
+    closeDlg($("#dlgEdit")); await reload(); toast(editing ? "Alterações salvas" : "Jogo adicionado");
+    if (navigator.storage?.persist) navigator.storage.persist().catch(()=>{});
+  } catch(err){
+    toast(err?.name === "QuotaExceededError" ? "Sem espaço no celular para salvar." : "Não foi possível salvar. Tente de novo.");
+  } finally { $("#eSave").disabled = false; }
+};
+$("#btnAdd").onclick = () => openEdit(null);
+
+/* ---------- Ajustes e backup ---------- */
+async function storageInfo(){
+  if (!navigator.storage?.estimate) return;
+  const { usage } = await navigator.storage.estimate();
+  const persist = navigator.storage.persisted ? await navigator.storage.persisted() : false;
+  $("#sInfo").textContent = `Espaço usado: ${(usage/1048576).toFixed(1)} MB. ${persist ? "Armazenamento protegido contra limpeza automática." : ""}`;
+}
+$("#btnCfg").onclick = () => { $("#iCot").value = fmtIn(cfg.cotacao); storageInfo(); openDlg($("#dlgCfg")); };
+$("#cClose").onclick = () => closeDlg($("#dlgCfg"));
+$("#cSave").onclick = async () => {
+  const c = num($("#iCot").value);
+  if (!c || c <= 0){ toast("Informe uma cotação válida."); return; }
+  cfg.cotacao = c; await idb.put("config", cfg, "app"); render(); toast("Cotação atualizada");
+};
+
+const toDataURL = b => new Promise((res,rej)=>{ const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(b); });
+$("#bExport").onclick = async () => {
+  const btn = $("#bExport"); btn.disabled = true; btn.textContent = "Gerando backup…";
+  try {
+    const fotos = {};
+    for (const g of games) for (const id of g.fotos||[]) { const b = await idb.get("photos", id); if (b) fotos[id] = await toDataURL(b); }
+    const json = JSON.stringify({ app: "estante", versao: 1, exportadoEm: new Date().toISOString(), cfg, games, fotos });
+    const name = `estante-backup-${hoje()}.json`;
+    const file = new File([json], name, { type: "application/json" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: "Backup Estante" });
+    } else {
+      const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = name;
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+    }
+    toast("Backup gerado");
+  } catch(err){ if (err?.name !== "AbortError") toast("Não foi possível gerar o backup."); }
+  finally { btn.disabled = false; btn.textContent = "Exportar backup"; }
+};
+$("#bImport").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  let data;
+  try { data = JSON.parse(await f.text()); } catch { toast("Arquivo inválido."); return; }
+  if (data?.app !== "estante" || !Array.isArray(data.games)) { toast("Este arquivo não é um backup da Estante."); return; }
+  if (!confirm(`Restaurar ${data.games.length} jogo(s)? A coleção atual deste celular será substituída.`)) return;
+  try {
+    await idb.clear("games"); await idb.clear("photos");
+    urls.forEach(u => URL.revokeObjectURL(u)); urls.clear();
+    for (const [id, du] of Object.entries(data.fotos || {})) { const b = await (await fetch(du)).blob(); await idb.put("photos", b, id); }
+    for (const g of data.games) await idb.put("games", g);
+    if (data.cfg?.cotacao) { cfg = { ...cfg, ...data.cfg }; await idb.put("config", cfg, "app"); }
+    closeDlg($("#dlgCfg")); await reload(); toast("Backup restaurado");
+  } catch(err){ toast("Falha ao restaurar o backup."); }
+});
+
+/* ---------- Início ---------- */
+(async () => {
+  try {
+    const c = await idb.get("config", "app"); if (c) cfg = { ...cfg, ...c };
+    await reload();
+  } catch(err){
+    $("#notice").innerHTML = `<div class="notice">Não foi possível abrir o armazenamento do celular. Verifique se o navegador não está em modo anônimo.</div>`;
+  }
+})();
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+</script>
+</body>
+</html>
